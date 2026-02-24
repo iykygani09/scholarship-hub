@@ -37,7 +37,7 @@ export default function Scholarships() {
       setScholarships((prev) => prev.map((s) => s.id === editItem.id ? { ...s, ...form, filledSeats: s.filledSeats } : s));
       toast({ title: "Scholarship updated successfully" });
     } else {
-      const newS: Scholarship = { id: `s${Date.now()}`, collegeId: college?.id || "", ...form, filledSeats: 0, status: "Active", categories: ["General"] };
+      const newS: Scholarship = { id: `s${Date.now()}`, collegeId: college?.id || "", ...form, filledSeats: 0, status: "Active", categories: ["General"], amountDescription: `₹${form.amount.toLocaleString()}`, eligibility: "As per criteria", portal: "" };
       setScholarships((prev) => [...prev, newS]);
       toast({ title: "Scholarship created successfully" });
     }
