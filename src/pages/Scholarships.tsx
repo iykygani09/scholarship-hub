@@ -1,19 +1,18 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getScholarships, type Scholarship } from "@/data/colleges";
+import { getGovtScholarships, type Scholarship } from "@/data/colleges";
 import { Plus, Search, Pencil, Trash2, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Scholarships() {
   const { college } = useAuth();
   const { toast } = useToast();
-  const [scholarships, setScholarships] = useState<Scholarship[]>(() => getScholarships(college?.id || ""));
+  const [scholarships, setScholarships] = useState<Scholarship[]>(() => getGovtScholarships(college?.id || ""));
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editItem, setEditItem] = useState<Scholarship | null>(null);
   const [step, setStep] = useState(1);
 
-  // Form state
   const [form, setForm] = useState({ title: "", description: "", type: "Merit-based" as Scholarship["type"], amount: 0, totalSeats: 0, cgpaRequired: 0, maxIncome: 0, startDate: "", endDate: "" });
 
   const filtered = scholarships.filter((s) => s.title.toLowerCase().includes(search.toLowerCase()));
@@ -54,8 +53,8 @@ export default function Scholarships() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-black text-foreground">Scholarships</h1>
-        <button onClick={openCreate} className="gradient-primary px-5 py-2.5 rounded-xl text-primary-foreground font-semibold flex items-center gap-2 hover:scale-105 transition-transform">
+        <h1 className="text-3xl font-black text-foreground">Manage Scholarships</h1>
+        <button onClick={openCreate} className="gradient-trust px-5 py-2.5 rounded-xl text-white font-semibold flex items-center gap-2 hover:scale-105 transition-transform shadow-lg">
           <Plus className="w-5 h-5" /> Create New
         </button>
       </div>
@@ -84,7 +83,9 @@ export default function Scholarships() {
                   <p className="font-semibold text-foreground">{s.title}</p>
                   <p className="text-sm text-muted-foreground truncate max-w-xs">{s.description}</p>
                 </td>
-                <td className="p-4 text-muted-foreground hidden md:table-cell">{s.type}</td>
+                <td className="p-4 text-muted-foreground hidden md:table-cell">
+                  <span className={`text-xs px-2 py-1 rounded-full ${s.type === "Government" ? "bg-primary/10 text-primary" : s.type === "Institutional" ? "bg-accent/10 text-accent" : "bg-secondary text-muted-foreground"}`}>{s.type}</span>
+                </td>
                 <td className="p-4 font-mono text-foreground">₹{s.amount.toLocaleString()}</td>
                 <td className="p-4 text-muted-foreground hidden md:table-cell">{s.filledSeats}/{s.totalSeats}</td>
                 <td className="p-4"><span className="status-active text-xs px-3 py-1 rounded-full">{s.status}</span></td>
@@ -107,10 +108,9 @@ export default function Scholarships() {
               <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
             </div>
 
-            {/* Step indicators */}
             <div className="flex gap-2 mb-6">
               {[1, 2, 3].map((s) => (
-                <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${step >= s ? "gradient-primary" : "bg-secondary"}`} />
+                <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${step >= s ? "gradient-trust" : "bg-secondary"}`} />
               ))}
             </div>
 
@@ -124,50 +124,30 @@ export default function Scholarships() {
                   <option value="Sports">Sports</option>
                   <option value="Need-based">Need-based</option>
                   <option value="Research">Research</option>
+                  <option value="Institutional">Institutional</option>
                 </select>
               </div>
             )}
             {step === 2 && (
               <div className="space-y-4">
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1 block">Amount (₹)</label>
-                  <input type="number" value={form.amount} onChange={(e) => setForm({ ...form, amount: +e.target.value })} className="input-dark w-full" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1 block">Total Seats</label>
-                  <input type="number" value={form.totalSeats} onChange={(e) => setForm({ ...form, totalSeats: +e.target.value })} className="input-dark w-full" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1 block">Min CGPA Required</label>
-                  <input type="number" step="0.1" value={form.cgpaRequired} onChange={(e) => setForm({ ...form, cgpaRequired: +e.target.value })} className="input-dark w-full" />
-                </div>
+                <div><label className="text-sm text-muted-foreground mb-1 block">Amount (₹)</label><input type="number" value={form.amount} onChange={(e) => setForm({ ...form, amount: +e.target.value })} className="input-dark w-full" /></div>
+                <div><label className="text-sm text-muted-foreground mb-1 block">Total Seats</label><input type="number" value={form.totalSeats} onChange={(e) => setForm({ ...form, totalSeats: +e.target.value })} className="input-dark w-full" /></div>
+                <div><label className="text-sm text-muted-foreground mb-1 block">Min CGPA Required</label><input type="number" step="0.1" value={form.cgpaRequired} onChange={(e) => setForm({ ...form, cgpaRequired: +e.target.value })} className="input-dark w-full" /></div>
               </div>
             )}
             {step === 3 && (
               <div className="space-y-4">
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1 block">Start Date</label>
-                  <input type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} className="input-dark w-full" />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground mb-1 block">End Date</label>
-                  <input type="date" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} className="input-dark w-full" />
-                </div>
+                <div><label className="text-sm text-muted-foreground mb-1 block">Start Date</label><input type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} className="input-dark w-full" /></div>
+                <div><label className="text-sm text-muted-foreground mb-1 block">End Date</label><input type="date" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} className="input-dark w-full" /></div>
               </div>
             )}
 
             <div className="flex justify-between mt-6">
-              <button onClick={() => setStep(Math.max(1, step - 1))} disabled={step === 1} className="px-5 py-2 rounded-lg bg-secondary text-secondary-foreground disabled:opacity-30">
-                Previous
-              </button>
+              <button onClick={() => setStep(Math.max(1, step - 1))} disabled={step === 1} className="px-5 py-2 rounded-lg bg-secondary text-secondary-foreground disabled:opacity-30">Previous</button>
               {step < 3 ? (
-                <button onClick={() => setStep(step + 1)} className="gradient-primary px-5 py-2 rounded-lg text-primary-foreground font-semibold">
-                  Next
-                </button>
+                <button onClick={() => setStep(step + 1)} className="gradient-trust px-5 py-2 rounded-lg text-white font-semibold">Next</button>
               ) : (
-                <button onClick={handleSave} className="gradient-primary px-5 py-2 rounded-lg text-primary-foreground font-semibold">
-                  {editItem ? "Update" : "Create"}
-                </button>
+                <button onClick={handleSave} className="gradient-trust px-5 py-2 rounded-lg text-white font-semibold">{editItem ? "Update" : "Create"}</button>
               )}
             </div>
           </div>

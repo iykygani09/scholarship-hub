@@ -26,30 +26,48 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [auth, setAuth] = useState<AuthState>(() => {
-    const stored = localStorage.getItem("scholar_auth");
+    const stored = sessionStorage.getItem("scholar_auth");
     if (stored) return JSON.parse(stored);
     return { isAuthenticated: false, college: null, adminName: "" };
   });
   const [selectedCollege, setSelectedCollege] = useState<College | null>(() => {
-    const s = localStorage.getItem("scholar_selected_college");
+    const s = sessionStorage.getItem("scholar_selected_college");
     return s ? JSON.parse(s) : null;
   });
-  const [codeVerified, setCodeVerified] = useState(() => localStorage.getItem("scholar_code_verified") === "true");
+  const [codeVerified, setCodeVerified] = useState(() => sessionStorage.getItem("scholar_code_verified") === "true");
 
   useEffect(() => {
-    localStorage.setItem("scholar_auth", JSON.stringify(auth));
+    sessionStorage.setItem("scholar_auth", JSON.stringify(auth));
   }, [auth]);
+
+  // Prevent back navigation when authenticated
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      const handlePopState = (e: PopStateEvent) => {
+        // Push state again to prevent going back
+        window.history.pushState(null, "", window.location.href);
+      };
+      
+      // Push initial state
+      window.history.pushState(null, "", window.location.href);
+      window.addEventListener("popstate", handlePopState);
+      
+      return () => {
+        window.removeEventListener("popstate", handlePopState);
+      };
+    }
+  }, [auth.isAuthenticated]);
 
   const selectCollege = useCallback((college: College) => {
     setSelectedCollege(college);
-    localStorage.setItem("scholar_selected_college", JSON.stringify(college));
+    sessionStorage.setItem("scholar_selected_college", JSON.stringify(college));
   }, []);
 
   const verifyCode = useCallback((code: string): boolean => {
     if (!selectedCollege) return false;
     if (selectedCollege.code === code.toUpperCase().trim()) {
       setCodeVerified(true);
-      localStorage.setItem("scholar_code_verified", "true");
+      sessionStorage.setItem("scholar_code_verified", "true");
       return true;
     }
     return false;
@@ -68,9 +86,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAuth({ isAuthenticated: false, college: null, adminName: "" });
     setSelectedCollege(null);
     setCodeVerified(false);
-    localStorage.removeItem("scholar_auth");
-    localStorage.removeItem("scholar_selected_college");
-    localStorage.removeItem("scholar_code_verified");
+    sessionStorage.removeItem("scholar_auth");
+    sessionStorage.removeItem("scholar_selected_college");
+    sessionStorage.removeItem("scholar_code_verified");
   }, []);
 
   return (

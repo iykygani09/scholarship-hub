@@ -1,12 +1,15 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { getScholarships, getApplications } from "@/data/colleges";
-import { GraduationCap, FileText, DollarSign, Users, TrendingUp, TrendingDown } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Area, AreaChart } from "recharts";
+import { getGovtScholarships, getApplications, getInternalPrograms } from "@/data/colleges";
+import { GraduationCap, FileText, DollarSign, Users, TrendingUp, TrendingDown, Sparkles, Landmark, ArrowRight } from "lucide-react";
+import { PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip, Area, AreaChart } from "recharts";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const { college, adminName } = useAuth();
-  const scholarships = getScholarships(college?.id || "");
+  const navigate = useNavigate();
+  const scholarships = getGovtScholarships(college?.id || "");
   const applications = getApplications(college?.id || "");
+  const internalPrograms = getInternalPrograms(college?.id || "");
 
   const approved = applications.filter((a) => a.status === "Approved").length;
   const pending = applications.filter((a) => a.status === "Pending").length;
@@ -14,8 +17,8 @@ export default function Dashboard() {
   const totalBudget = scholarships.reduce((s, sc) => s + sc.amount * sc.filledSeats, 0);
 
   const pieData = [
-    { name: "Approved", value: approved, color: "#10b981" },
-    { name: "Pending", value: pending, color: "#f59e0b" },
+    { name: "Approved", value: approved, color: "#40DC74" },
+    { name: "Pending", value: pending, color: "#FFD700" },
     { name: "Rejected", value: rejected, color: "#ef4444" },
   ];
 
@@ -25,10 +28,16 @@ export default function Dashboard() {
   ];
 
   const stats = [
-    { title: "Scholarships", value: scholarships.length, trend: "+12%", up: true, icon: GraduationCap, iconClass: "stat-icon-scholarships" },
+    { title: "Govt Schemes", value: scholarships.length, trend: "+12%", up: true, icon: Landmark, iconClass: "stat-icon-scholarships" },
     { title: "Applications", value: applications.length, trend: "+23%", up: true, icon: FileText, iconClass: "stat-icon-applications" },
     { title: "Budget (₹)", value: `₹${Math.round(totalBudget / 100000)}L`, trend: "-5%", up: false, icon: DollarSign, iconClass: "stat-icon-budget" },
-    { title: "Students", value: applications.length, trend: "+8%", up: true, icon: Users, iconClass: "stat-icon-students" },
+    { title: "Internal Programs", value: internalPrograms.length, trend: "+8%", up: true, icon: Sparkles, iconClass: "stat-icon-students" },
+  ];
+
+  const quickActions = [
+    { label: "Internal Programs", desc: "View college programs", path: "/internal-programs", gradient: "gradient-trust" },
+    { label: "Govt Scholarships", desc: "View govt schemes", path: "/govt-scholarships", gradient: "gradient-energy" },
+    { label: "AI Allocation", desc: "Run smart ranking", path: "/ai-allocation", gradient: "gradient-tech" },
   ];
 
   return (
@@ -40,27 +49,38 @@ export default function Dashboard() {
         </h1>
         <div className="mt-1 flex items-center gap-2">
           <span className="text-muted-foreground">{college?.name}</span>
-          <div className="h-0.5 w-32 gradient-primary animate-draw-line rounded-full" />
+          <div className="h-0.5 w-32 gradient-trust animate-draw-line rounded-full" />
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s, i) => (
-          <div key={s.title} className={`glass-card p-5 animate-slide-up stagger-${i + 1} opacity-0`} style={{ animationFillMode: "forwards" }}>
+          <div key={s.title} className={`glass-card p-5 card-hover animate-slide-up stagger-${i + 1} opacity-0`} style={{ animationFillMode: "forwards" }}>
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm text-muted-foreground">{s.title}</span>
               <div className={`w-10 h-10 rounded-xl ${s.iconClass} flex items-center justify-center`}>
-                <s.icon className="w-5 h-5 text-primary-foreground" />
+                <s.icon className="w-5 h-5 text-white" />
               </div>
             </div>
             <p className="text-3xl font-black text-foreground font-mono">{s.value}</p>
             <div className="flex items-center gap-1 mt-2">
-              {s.up ? <TrendingUp className="w-4 h-4 text-success" /> : <TrendingDown className="w-4 h-4 text-destructive" />}
-              <span className={`text-sm ${s.up ? "text-success" : "text-destructive"}`}>{s.trend}</span>
+              {s.up ? <TrendingUp className="w-4 h-4 text-accent" /> : <TrendingDown className="w-4 h-4 text-destructive" />}
+              <span className={`text-sm ${s.up ? "text-accent" : "text-destructive"}`}>{s.trend}</span>
               <span className="text-xs text-muted-foreground ml-1">vs last month</span>
             </div>
           </div>
+        ))}
+      </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {quickActions.map((qa) => (
+          <button key={qa.label} onClick={() => navigate(qa.path)} className={`${qa.gradient} p-5 rounded-xl text-left hover:scale-[1.02] transition-transform shadow-lg group`}>
+            <h3 className="text-white font-bold text-lg mb-1">{qa.label}</h3>
+            <p className="text-white/70 text-sm mb-3">{qa.desc}</p>
+            <ArrowRight className="w-5 h-5 text-white/70 group-hover:text-white group-hover:translate-x-1 transition-all" />
+          </button>
         ))}
       </div>
 
@@ -96,14 +116,14 @@ export default function Dashboard() {
             <AreaChart data={trendData}>
               <defs>
                 <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#0052CC" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#40DC74" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <XAxis dataKey="month" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
               <Tooltip contentStyle={{ backgroundColor: "hsl(222 47% 8%)", border: "1px solid hsl(217 33% 18%)", borderRadius: "8px", color: "#fff" }} />
-              <Area type="monotone" dataKey="apps" stroke="#6366f1" strokeWidth={2} fill="url(#areaGrad)" />
+              <Area type="monotone" dataKey="apps" stroke="#0052CC" strokeWidth={2} fill="url(#areaGrad)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getScholarships, getApplications, type Application } from "@/data/colleges";
+import { getGovtScholarships, getApplications, type Application } from "@/data/colleges";
 import { Brain, Play, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AIAllocation() {
   const { college } = useAuth();
   const { toast } = useToast();
-  const scholarships = getScholarships(college?.id || "");
+  const scholarships = getGovtScholarships(college?.id || "");
   const allApplications = getApplications(college?.id || "");
   const [selectedScholarship, setSelectedScholarship] = useState(scholarships[0]?.id || "");
   const [running, setRunning] = useState(false);
@@ -38,7 +38,9 @@ export default function AIAllocation() {
       <h1 className="text-3xl font-black text-foreground">AI Allocation</h1>
 
       <div className="glass-card p-8 max-w-xl mx-auto text-center">
-        <Brain className="w-12 h-12 text-primary mx-auto mb-4" />
+        <div className="w-16 h-16 rounded-2xl gradient-tech flex items-center justify-center mx-auto mb-4 animate-glow">
+          <Brain className="w-8 h-8 text-white" />
+        </div>
         <h2 className="text-xl font-bold text-foreground mb-2">Select Scholarship</h2>
         <select value={selectedScholarship} onChange={(e) => setSelectedScholarship(e.target.value)} className="input-dark w-full mb-4">
           {scholarships.map((s) => (
@@ -50,13 +52,13 @@ export default function AIAllocation() {
         {running && (
           <div className="mb-4">
             <div className="h-2 bg-secondary rounded-full overflow-hidden">
-              <div className="h-full gradient-ai transition-all duration-200 rounded-full" style={{ width: `${progress}%` }} />
+              <div className="h-full gradient-tech transition-all duration-200 rounded-full" style={{ width: `${progress}%` }} />
             </div>
             <p className="text-sm text-muted-foreground mt-2">{progress}%</p>
           </div>
         )}
 
-        <button onClick={runAllocation} disabled={running} className="gradient-ai w-full py-4 rounded-xl text-primary-foreground font-semibold text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform disabled:opacity-50">
+        <button onClick={runAllocation} disabled={running} className="gradient-tech w-full py-4 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform disabled:opacity-50 shadow-lg">
           <Play className="w-5 h-5" /> Run AI Allocation
         </button>
       </div>
@@ -76,7 +78,7 @@ export default function AIAllocation() {
             </thead>
             <tbody>
               {results.map((app, i) => (
-                <tr key={app.id} className="border-b border-border/50 hover:bg-secondary/30 transition-colors">
+                <tr key={app.id} className={`border-b border-border/50 hover:bg-secondary/30 transition-colors ${i < 3 ? "bg-secondary/10" : ""}`}>
                   <td className="p-4 text-lg">{i < 3 ? medals[i] : i + 1}</td>
                   <td className="p-4 font-semibold text-foreground">{app.studentName}</td>
                   <td className="p-4 font-mono text-muted-foreground hidden md:table-cell">{app.rollNumber}</td>
@@ -85,7 +87,7 @@ export default function AIAllocation() {
                     <button onClick={() => setScoreModal(app)} className="font-mono text-primary underline">{app.aiScore}</button>
                   </td>
                   <td className="p-4 text-right space-x-2">
-                    <button className="px-3 py-1 text-xs rounded-lg bg-success/20 text-success hover:bg-success/30">Approve</button>
+                    <button className="px-3 py-1 text-xs rounded-lg bg-accent/20 text-accent hover:bg-accent/30">Approve</button>
                     <button className="px-3 py-1 text-xs rounded-lg bg-destructive/20 text-destructive hover:bg-destructive/30">Reject</button>
                   </td>
                 </tr>
@@ -95,7 +97,6 @@ export default function AIAllocation() {
         </div>
       )}
 
-      {/* AI Score Modal */}
       {scoreModal && (
         <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setScoreModal(null)}>
           <div className="glass-card max-w-sm w-full p-6 animate-slide-up" onClick={(e) => e.stopPropagation()}>
@@ -115,7 +116,7 @@ export default function AIAllocation() {
                   <span className="text-foreground font-mono">{item.value}</span>
                 </div>
                 <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                  <div className="h-full gradient-ai rounded-full transition-all duration-1000" style={{ width: `${item.value}%` }} />
+                  <div className="h-full gradient-tech rounded-full transition-all duration-1000" style={{ width: `${item.value}%` }} />
                 </div>
               </div>
             ))}
