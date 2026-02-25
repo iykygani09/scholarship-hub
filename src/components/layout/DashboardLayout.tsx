@@ -2,12 +2,14 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  LayoutDashboard, GraduationCap, FileText, Brain, ClipboardList, User, LogOut, ChevronLeft, Bell, Search, Menu,
+  LayoutDashboard, GraduationCap, FileText, Brain, ClipboardList, User, LogOut, ChevronLeft, Bell, Search, Menu, Landmark, Sparkles,
 } from "lucide-react";
 
 const menuItems = [
   { title: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-  { title: "Scholarships", path: "/scholarships", icon: GraduationCap },
+  { title: "Internal Programs", path: "/internal-programs", icon: Sparkles },
+  { title: "Govt Scholarships", path: "/govt-scholarships", icon: Landmark },
+  { title: "Manage Scholarships", path: "/scholarships", icon: GraduationCap },
   { title: "Applications", path: "/applications", icon: FileText },
   { title: "AI Allocation", path: "/ai-allocation", icon: Brain },
   { title: "Audit Logs", path: "/audit-logs", icon: ClipboardList },
@@ -29,15 +31,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Sidebar */}
       <aside className={`glass-sidebar flex flex-col transition-all duration-300 ${collapsed ? "w-20" : "w-64"} shrink-0`}>
         <div className="flex items-center gap-2 p-4 border-b border-sidebar-border">
-          <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center shrink-0">
-            <GraduationCap className="w-5 h-5 text-primary-foreground" />
+          <div className="w-9 h-9 rounded-lg gradient-trust flex items-center justify-center shrink-0 animate-glow">
+            <GraduationCap className="w-5 h-5 text-white" />
           </div>
-          {!collapsed && <span className="font-bold text-foreground text-lg truncate">ScholarConnect</span>}
+          {!collapsed && <span className="font-bold gradient-text-brand text-lg truncate">ScholarConnect</span>}
           <button onClick={() => setCollapsed(!collapsed)} className="ml-auto text-muted-foreground hover:text-foreground transition-colors">
             {collapsed ? <Menu className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
           </button>
         </div>
-        <nav className="flex-1 p-3 space-y-1">
+        <nav className="flex-1 p-3 space-y-1 overflow-auto">
           {menuItems.map((item) => (
             <NavLink
               key={item.path}
@@ -74,7 +76,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <span className="absolute -top-1 -right-1 w-4 h-4 bg-destructive rounded-full text-[10px] flex items-center justify-center text-destructive-foreground font-bold animate-pulse">3</span>
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-semibold text-sm">
+              <div className="w-9 h-9 rounded-full gradient-trust flex items-center justify-center text-white font-semibold text-sm">
                 {adminName?.charAt(0) || "A"}
               </div>
               <div className="hidden md:block">

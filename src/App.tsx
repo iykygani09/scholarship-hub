@@ -10,6 +10,8 @@ import CollegeVerify from "./pages/CollegeVerify";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Scholarships from "./pages/Scholarships";
+import GovtScholarships from "./pages/GovtScholarships";
+import InternalPrograms from "./pages/InternalPrograms";
 import Applications from "./pages/Applications";
 import AIAllocation from "./pages/AIAllocation";
 import AuditLogs from "./pages/AuditLogs";
@@ -38,6 +40,8 @@ const AppRoutes = () => (
     <Route path="/verify/:collegeId" element={<PublicRoute><CollegeVerify /></PublicRoute>} />
     <Route path="/login/:collegeId" element={<PublicRoute><Login /></PublicRoute>} />
     <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+    <Route path="/internal-programs" element={<ProtectedRoute><InternalPrograms /></ProtectedRoute>} />
+    <Route path="/govt-scholarships" element={<ProtectedRoute><GovtScholarships /></ProtectedRoute>} />
     <Route path="/scholarships" element={<ProtectedRoute><Scholarships /></ProtectedRoute>} />
     <Route path="/applications" element={<ProtectedRoute><Applications /></ProtectedRoute>} />
     <Route path="/ai-allocation" element={<ProtectedRoute><AIAllocation /></ProtectedRoute>} />
