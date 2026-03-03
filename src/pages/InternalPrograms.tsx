@@ -5,7 +5,7 @@ import { Search, GraduationCap, Sparkles } from "lucide-react";
 
 const categoryLabels: Record<string, { label: string; gradient: string }> = {
   merit: { label: "🏆 Academic & Merit", gradient: "gradient-trust" },
-  need: { label: "💰 Need-Based & Govt Support", gradient: "gradient-energy" },
+  need: { label: "💰 Need-Based & Support", gradient: "gradient-energy" },
   talent: { label: "🏅 Talent-Based", gradient: "gradient-tech" },
   exposure: { label: "🌍 Premium Exposure", gradient: "gradient-trust" },
   foundation: { label: "🧠 Foundation Support", gradient: "gradient-energy" },
@@ -31,6 +31,8 @@ export default function InternalPrograms() {
     return acc;
   }, {});
 
+  const totalBudget = programs.reduce((s, p) => s + p.amount * p.totalSeats, 0);
+
   return (
     <div className="space-y-6">
       <div className="animate-slide-up">
@@ -40,7 +42,7 @@ export default function InternalPrograms() {
           </div>
           <div>
             <h1 className="text-3xl font-black text-foreground">Internal & Current Programs</h1>
-            <p className="text-muted-foreground">{college?.name} — Student Support Programs</p>
+            <p className="text-muted-foreground">{college?.name} — {programs.length} Programs • Total Budget: ₹{Math.round(totalBudget / 100000)}L</p>
           </div>
         </div>
       </div>
@@ -92,6 +94,10 @@ export default function InternalPrograms() {
                       <div className="flex items-start gap-2">
                         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider min-w-[70px]">Benefit</span>
                         <span className="text-sm font-semibold gradient-text-brand">{program.benefit}</span>
+                      </div>
+                      <div className="flex items-center gap-4 mt-2">
+                        <span className="text-sm font-mono font-bold text-foreground">₹{program.amount.toLocaleString()}</span>
+                        <span className="text-xs text-muted-foreground">{program.filledSeats}/{program.totalSeats} seats filled</span>
                       </div>
                     </div>
                   </div>
