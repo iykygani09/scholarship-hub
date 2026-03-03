@@ -1,20 +1,19 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { getGovtScholarships, getApplications, getInternalPrograms } from "@/data/colleges";
-import { GraduationCap, FileText, DollarSign, Users, TrendingUp, TrendingDown, Sparkles, Landmark, ArrowRight } from "lucide-react";
+import { getInternalPrograms, getApplications } from "@/data/colleges";
+import { GraduationCap, FileText, DollarSign, Sparkles, TrendingUp, TrendingDown, ArrowRight } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip, Area, AreaChart } from "recharts";
 import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const { college, adminName } = useAuth();
   const navigate = useNavigate();
-  const scholarships = getGovtScholarships(college?.id || "");
+  const programs = getInternalPrograms(college?.id || "");
   const applications = getApplications(college?.id || "");
-  const internalPrograms = getInternalPrograms(college?.id || "");
 
   const approved = applications.filter((a) => a.status === "Approved").length;
   const pending = applications.filter((a) => a.status === "Pending").length;
   const rejected = applications.filter((a) => a.status === "Rejected").length;
-  const totalBudget = scholarships.reduce((s, sc) => s + sc.amount * sc.filledSeats, 0);
+  const totalBudget = programs.reduce((s, p) => s + p.amount * p.filledSeats, 0);
 
   const pieData = [
     { name: "Approved", value: approved, color: "#40DC74" },
@@ -23,26 +22,25 @@ export default function Dashboard() {
   ];
 
   const trendData = [
-    { month: "Aug", apps: 2 }, { month: "Sep", apps: 3 }, { month: "Oct", apps: 4 },
-    { month: "Nov", apps: 5 }, { month: "Dec", apps: 6 }, { month: "Jan", apps: 7 },
+    { month: "Aug", apps: 2 }, { month: "Sep", apps: 4 }, { month: "Oct", apps: 5 },
+    { month: "Nov", apps: 6 }, { month: "Dec", apps: 8 }, { month: "Jan", apps: 10 },
   ];
 
   const stats = [
-    { title: "Govt Schemes", value: scholarships.length, trend: "+12%", up: true, icon: Landmark, iconClass: "stat-icon-scholarships" },
+    { title: "Internal Programs", value: programs.length, trend: "+12%", up: true, icon: Sparkles, iconClass: "stat-icon-scholarships" },
     { title: "Applications", value: applications.length, trend: "+23%", up: true, icon: FileText, iconClass: "stat-icon-applications" },
-    { title: "Budget (₹)", value: `₹${Math.round(totalBudget / 100000)}L`, trend: "-5%", up: false, icon: DollarSign, iconClass: "stat-icon-budget" },
-    { title: "Internal Programs", value: internalPrograms.length, trend: "+8%", up: true, icon: Sparkles, iconClass: "stat-icon-students" },
+    { title: "Budget Allocated", value: `₹${Math.round(totalBudget / 100000)}L`, trend: "+8%", up: true, icon: DollarSign, iconClass: "stat-icon-budget" },
+    { title: "Active Programs", value: programs.filter(p => p.status === "Active").length, trend: "+5%", up: true, icon: GraduationCap, iconClass: "stat-icon-students" },
   ];
 
   const quickActions = [
-    { label: "Internal Programs", desc: "View college programs", path: "/internal-programs", gradient: "gradient-trust" },
-    { label: "Govt Scholarships", desc: "View govt schemes", path: "/govt-scholarships", gradient: "gradient-energy" },
+    { label: "Internal Programs", desc: "View all college programs", path: "/internal-programs", gradient: "gradient-trust" },
+    { label: "Applications", desc: "Review student applications", path: "/applications", gradient: "gradient-energy" },
     { label: "AI Allocation", desc: "Run smart ranking", path: "/ai-allocation", gradient: "gradient-tech" },
   ];
 
   return (
     <div className="space-y-6">
-      {/* Welcome */}
       <div className="animate-slide-up">
         <h1 className="text-3xl font-black text-foreground">
           Welcome back, <span className="gradient-text-brand">{adminName}</span>
@@ -53,7 +51,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s, i) => (
           <div key={s.title} className={`glass-card p-5 card-hover animate-slide-up stagger-${i + 1} opacity-0`} style={{ animationFillMode: "forwards" }}>
@@ -73,7 +70,6 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Quick Actions */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {quickActions.map((qa) => (
           <button key={qa.label} onClick={() => navigate(qa.path)} className={`${qa.gradient} p-5 rounded-xl text-left hover:scale-[1.02] transition-transform shadow-lg group`}>
@@ -84,7 +80,6 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass-card p-6">
           <h3 className="text-lg font-bold text-foreground mb-4">Application Status</h3>
@@ -126,6 +121,29 @@ export default function Dashboard() {
               <Area type="monotone" dataKey="apps" stroke="#0052CC" strokeWidth={2} fill="url(#areaGrad)" />
             </AreaChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Top Programs Preview */}
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-foreground">Top Internal Programs</h3>
+          <button onClick={() => navigate("/internal-programs")} className="text-sm text-primary hover:text-primary/80 flex items-center gap-1">View All <ArrowRight className="w-4 h-4" /></button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {programs.slice(0, 3).map((p) => (
+            <div key={p.id} className="bg-secondary/30 rounded-xl p-4 hover:bg-secondary/50 transition-colors">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-2xl">{p.icon}</span>
+                <h4 className="font-semibold text-foreground text-sm truncate">{p.title}</h4>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{p.description}</p>
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-sm font-bold gradient-text-brand">₹{p.amount.toLocaleString()}</span>
+                <span className="text-xs text-muted-foreground">{p.filledSeats}/{p.totalSeats} seats</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

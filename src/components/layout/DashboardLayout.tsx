@@ -2,14 +2,13 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  LayoutDashboard, GraduationCap, FileText, Brain, ClipboardList, User, LogOut, ChevronLeft, Bell, Search, Menu, Landmark, Sparkles,
+  LayoutDashboard, GraduationCap, FileText, Brain, ClipboardList, User, LogOut, ChevronLeft, Bell, Search, Menu, Sparkles,
 } from "lucide-react";
 
 const menuItems = [
   { title: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
   { title: "Internal Programs", path: "/internal-programs", icon: Sparkles },
-  { title: "Govt Scholarships", path: "/govt-scholarships", icon: Landmark },
-  { title: "Manage Scholarships", path: "/scholarships", icon: GraduationCap },
+  { title: "Manage Programs", path: "/scholarships", icon: GraduationCap },
   { title: "Applications", path: "/applications", icon: FileText },
   { title: "AI Allocation", path: "/ai-allocation", icon: Brain },
   { title: "Audit Logs", path: "/audit-logs", icon: ClipboardList },
@@ -28,7 +27,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex min-h-screen w-full">
-      {/* Sidebar */}
       <aside className={`glass-sidebar flex flex-col transition-all duration-300 ${collapsed ? "w-20" : "w-64"} shrink-0`}>
         <div className="flex items-center gap-2 p-4 border-b border-sidebar-border">
           <div className="w-9 h-9 rounded-lg gradient-trust flex items-center justify-center shrink-0 animate-glow">
@@ -61,9 +59,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Navbar */}
         <header className="h-16 border-b border-border bg-card/40 backdrop-blur-lg flex items-center px-6 gap-4 shrink-0">
           <h2 className="font-semibold gradient-text-brand text-lg truncate">{college?.name}</h2>
           <div className="ml-auto flex items-center gap-4">
