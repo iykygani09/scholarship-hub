@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ShieldCheck, ArrowRight, GraduationCap, ArrowLeft, CheckCircle } from "lucide-react";
+import heroBg from "@/assets/hero-bg.jpg";
 
 export default function CollegeVerify() {
   const [code, setCode] = useState("");
@@ -33,17 +34,16 @@ export default function CollegeVerify() {
   return (
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-2/5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#6C5CE7] via-[#1a1a2e] to-[#00CEC9]" />
-        <div className="floating-orb w-64 h-64 bg-[#6C5CE7] top-[10%] right-[-10%]" />
-        <div className="floating-orb w-48 h-48 bg-[#00CEC9] bottom-[20%] left-[-5%]" style={{ animationDelay: "1.5s" }} />
-        <div className="absolute inset-0 flex flex-col justify-between p-10">
-          <div className="text-xs tracking-widest text-white/60 uppercase">Scholarship Management Platform</div>
+        <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/70 to-background/50" />
+        <div className="absolute inset-0 flex flex-col justify-between p-10 z-10">
+          <div className="text-xs tracking-widest text-muted-foreground uppercase">Scholarship Management Platform</div>
           <div>
-            <h2 className="text-5xl font-black text-white mb-2">Verify</h2>
-            <h3 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#00CEC9] to-[#6C5CE7] mb-4">{selectedCollege.shortName}</h3>
-            <p className="text-white/70">Enter your institution's unique code to access the scholarship portal for {selectedCollege.name}.</p>
+            <h2 className="text-5xl font-black text-foreground mb-2">Verify</h2>
+            <h3 className="text-5xl font-black gradient-text-brand mb-4">{selectedCollege.shortName}</h3>
+            <p className="text-muted-foreground">Enter your institution's unique code to access the scholarship portal for {selectedCollege.name}.</p>
           </div>
-          <div className="text-white/60 text-sm">Step 2 of 3 — Code Verification</div>
+          <div className="text-muted-foreground text-sm">Step 2 of 3 — Code Verification</div>
         </div>
       </div>
 
@@ -91,7 +91,7 @@ export default function CollegeVerify() {
               />
               {error && <p className="text-destructive text-sm mb-4">{error}</p>}
 
-              <button onClick={handleVerify} disabled={loading} className="gradient-tech w-full py-4 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2 mt-4 hover:scale-[1.02] transition-transform disabled:opacity-50 shadow-lg">
+              <button onClick={handleVerify} disabled={loading} className="gradient-cta w-full py-4 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2 mt-4 hover:scale-[1.02] transition-transform disabled:opacity-50 shadow-lg">
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
