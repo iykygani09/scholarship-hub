@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ArrowRight, GraduationCap, ArrowLeft, Eye, EyeOff, LogIn } from "lucide-react";
+import heroBg from "@/assets/hero-bg.jpg";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -32,17 +33,16 @@ export default function Login() {
   return (
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-2/5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#FFD700] via-[#1a1a2e] to-[#FF8C00]" />
-        <div className="floating-orb w-64 h-64 bg-[#FFD700] top-[10%] left-[-10%]" />
-        <div className="floating-orb w-48 h-48 bg-[#FF8C00] bottom-[20%] right-[-5%]" style={{ animationDelay: "1.5s" }} />
-        <div className="absolute inset-0 flex flex-col justify-between p-10">
-          <div className="text-xs tracking-widest text-white/60 uppercase">Scholarship Management Platform</div>
+        <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/70 to-background/50" />
+        <div className="absolute inset-0 flex flex-col justify-between p-10 z-10">
+          <div className="text-xs tracking-widest text-muted-foreground uppercase">Scholarship Management Platform</div>
           <div>
-            <h2 className="text-5xl font-black text-white mb-2">Welcome to</h2>
-            <h3 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] to-[#FF8C00] mb-4">{selectedCollege.shortName}</h3>
-            <p className="text-white/70">Sign in to manage scholarships, track applications, and access your institution's portal.</p>
+            <h2 className="text-5xl font-black text-foreground mb-2">Welcome to</h2>
+            <h3 className="text-5xl font-black gradient-text-brand mb-4">{selectedCollege.shortName}</h3>
+            <p className="text-muted-foreground">Sign in to manage scholarships, track applications, and access your institution's portal.</p>
           </div>
-          <div className="text-white/60 text-sm">Step 3 of 3 — Admin Authentication</div>
+          <div className="text-muted-foreground text-sm">Step 3 of 3 — Admin Authentication</div>
         </div>
       </div>
 
@@ -91,7 +91,7 @@ export default function Login() {
           </button>
 
           <p className="text-sm text-muted-foreground mt-4 text-center">
-            Hint: <span className="font-mono text-xs text-foreground">{selectedCollege.adminEmail}</span> / <span className="font-mono text-xs text-foreground">admin123</span>
+            Don't have an account? <span className="text-primary cursor-pointer hover:underline">Sign Up</span>
           </p>
         </div>
 

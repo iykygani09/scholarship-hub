@@ -2,17 +2,13 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  LayoutDashboard, GraduationCap, FileText, Brain, ClipboardList, User, LogOut, ChevronLeft, Bell, Search, Menu, Sparkles,
+  LayoutDashboard, GraduationCap, FileText, LogOut, ChevronLeft, Bell, Search, Menu,
 } from "lucide-react";
 
 const menuItems = [
   { title: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-  { title: "Internal Programs", path: "/internal-programs", icon: Sparkles },
-  { title: "Manage Programs", path: "/scholarships", icon: GraduationCap },
-  { title: "Applications", path: "/applications", icon: FileText },
-  { title: "AI Allocation", path: "/ai-allocation", icon: Brain },
-  { title: "Audit Logs", path: "/audit-logs", icon: ClipboardList },
-  { title: "Profile", path: "/profile", icon: User },
+  { title: "Manage Scholarships", path: "/scholarships", icon: GraduationCap },
+  { title: "Manage Applications", path: "/applications", icon: FileText },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -54,7 +50,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="p-3 border-t border-sidebar-border">
           <button onClick={handleSignOut} className="sidebar-item w-full text-destructive hover:bg-destructive/10">
             <LogOut className="w-5 h-5 shrink-0" />
-            {!collapsed && <span>Sign Out</span>}
+            {!collapsed && <span>Logout</span>}
           </button>
         </div>
       </aside>
