@@ -82,7 +82,13 @@ export default function Login() {
           </div>
           {error && <p className="text-destructive text-sm mt-2">{error}</p>}
 
-          <button onClick={handleLogin} disabled={loading} className="gradient-cta w-full py-4 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2 mt-6 hover:scale-[1.02] transition-transform disabled:opacity-50 shadow-lg">
+          {/* Credentials hint */}
+          <div className="mt-3 p-3 rounded-lg bg-secondary/50 border border-border/50">
+            <p className="text-xs text-muted-foreground mb-1">Demo credentials for <span className="font-semibold text-foreground">{selectedCollege.shortName}</span>:</p>
+            <p className="text-xs font-mono text-foreground">{selectedCollege.adminEmail} / {selectedCollege.adminPassword}</p>
+          </div>
+
+          <button onClick={handleLogin} disabled={loading || !email || !password} className="gradient-cta w-full py-4 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2 mt-4 hover:scale-[1.02] transition-transform disabled:opacity-50 shadow-lg">
             {loading ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
@@ -91,7 +97,7 @@ export default function Login() {
           </button>
 
           <p className="text-sm text-muted-foreground mt-4 text-center">
-            Don't have an account? <span className="text-primary cursor-pointer hover:underline">Sign Up</span>
+            Don't have an account? <span className="text-primary cursor-pointer hover:underline" onClick={() => alert("Sign Up is not available yet. Please use the demo credentials above.")}>Sign Up</span>
           </p>
         </div>
 
