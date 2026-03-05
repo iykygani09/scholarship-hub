@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = useCallback((email: string, password: string): boolean => {
     if (!selectedCollege) return false;
-    if (selectedCollege.adminEmail === email && selectedCollege.adminPassword === password) {
+    if (selectedCollege.adminEmail.toLowerCase() === email.toLowerCase().trim() && selectedCollege.adminPassword === password.trim()) {
       setAuth({ isAuthenticated: true, college: selectedCollege, adminName: selectedCollege.adminName });
       return true;
     }
