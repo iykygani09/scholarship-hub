@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  LayoutDashboard, GraduationCap, FileText, LogOut, ChevronLeft, Bell, Search, Menu,
+  LayoutDashboard, GraduationCap, FileText, LogOut, ChevronLeft, Bell, Search, Menu, X,
 } from "lucide-react";
 
 const menuItems = [
@@ -13,6 +13,7 @@ const menuItems = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { college, adminName, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -21,9 +22,36 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     navigate("/", { replace: true });
   };
 
+  const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => (
+    <>
+      <nav className="flex-1 p-3 space-y-1 overflow-auto">
+        {menuItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            onClick={onNavigate}
+            className={({ isActive }) =>
+              `sidebar-item ${isActive ? "sidebar-item-active" : ""}`
+            }
+          >
+            <item.icon className="w-5 h-5 shrink-0" />
+            {(!collapsed || mobileOpen) && <span className="truncate">{item.title}</span>}
+          </NavLink>
+        ))}
+      </nav>
+      <div className="p-3 border-t border-sidebar-border">
+        <button onClick={handleSignOut} className="sidebar-item w-full text-destructive hover:bg-destructive/10">
+          <LogOut className="w-5 h-5 shrink-0" />
+          {(!collapsed || mobileOpen) && <span>Logout</span>}
+        </button>
+      </div>
+    </>
+  );
+
   return (
     <div className="flex min-h-screen w-full">
-      <aside className={`glass-sidebar flex flex-col transition-all duration-300 ${collapsed ? "w-20" : "w-64"} shrink-0`}>
+      {/* Desktop Sidebar */}
+      <aside className={`hidden md:flex glass-sidebar flex-col transition-all duration-300 ${collapsed ? "w-20" : "w-64"} shrink-0`}>
         <div className="flex items-center gap-2 p-4 border-b border-sidebar-border">
           <div className="w-9 h-9 rounded-lg gradient-trust flex items-center justify-center shrink-0 animate-glow">
             <GraduationCap className="w-5 h-5 text-white" />
@@ -33,33 +61,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {collapsed ? <Menu className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
           </button>
         </div>
-        <nav className="flex-1 p-3 space-y-1 overflow-auto">
-          {menuItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `sidebar-item ${isActive ? "sidebar-item-active" : ""}`
-              }
-            >
-              <item.icon className="w-5 h-5 shrink-0" />
-              {!collapsed && <span className="truncate">{item.title}</span>}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="p-3 border-t border-sidebar-border">
-          <button onClick={handleSignOut} className="sidebar-item w-full text-destructive hover:bg-destructive/10">
-            <LogOut className="w-5 h-5 shrink-0" />
-            {!collapsed && <span>Logout</span>}
-          </button>
-        </div>
+        <SidebarContent />
       </aside>
 
+      {/* Mobile Sidebar Overlay */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+          <aside className="absolute left-0 top-0 bottom-0 w-72 glass-sidebar flex flex-col z-10 animate-slide-in-left">
+            <div className="flex items-center gap-2 p-4 border-b border-sidebar-border">
+              <div className="w-9 h-9 rounded-lg gradient-trust flex items-center justify-center shrink-0">
+                <GraduationCap className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-bold gradient-text-brand text-lg">ScholarConnect</span>
+              <button onClick={() => setMobileOpen(false)} className="ml-auto text-muted-foreground hover:text-foreground">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <SidebarContent onNavigate={() => setMobileOpen(false)} />
+          </aside>
+        </div>
+      )}
+
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 border-b border-border bg-card/40 backdrop-blur-lg flex items-center px-6 gap-4 shrink-0">
-          <h2 className="font-semibold gradient-text-brand text-lg truncate">{college?.name}</h2>
-          <div className="ml-auto flex items-center gap-4">
-            <div className="relative hidden md:block">
+        <header className="h-14 sm:h-16 border-b border-border bg-card/40 backdrop-blur-lg flex items-center px-4 sm:px-6 gap-3 sm:gap-4 shrink-0">
+          {/* Mobile hamburger */}
+          <button onClick={() => setMobileOpen(true)} className="md:hidden text-muted-foreground hover:text-foreground">
+            <Menu className="w-5 h-5" />
+          </button>
+          <h2 className="font-semibold gradient-text-brand text-sm sm:text-lg truncate">{college?.name}</h2>
+          <div className="ml-auto flex items-center gap-3 sm:gap-4">
+            <div className="relative hidden lg:block">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input placeholder="Search..." className="input-dark pl-10 py-2 w-56 text-sm" />
             </div>
@@ -68,17 +100,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <span className="absolute -top-1 -right-1 w-4 h-4 bg-destructive rounded-full text-[10px] flex items-center justify-center text-destructive-foreground font-bold animate-pulse">3</span>
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full gradient-trust flex items-center justify-center text-white font-semibold text-sm">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full gradient-trust flex items-center justify-center text-white font-semibold text-sm">
                 {adminName?.charAt(0) || "A"}
               </div>
-              <div className="hidden md:block">
+              <div className="hidden sm:block">
                 <p className="text-sm font-medium text-foreground">{adminName}</p>
                 <p className="text-xs text-muted-foreground">Administrator</p>
               </div>
             </div>
           </div>
         </header>
-        <main className="flex-1 overflow-auto p-6">{children}</main>
+        <main className="flex-1 overflow-auto p-4 sm:p-6">{children}</main>
       </div>
     </div>
   );
