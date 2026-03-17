@@ -156,23 +156,9 @@ export const getInternalPrograms = (_collegeId: string): InternalProgram[] => {
   return [];
 };
 
-export const getApplications = (collegeId: string): Application[] => {
-  const college = colleges.find(c => c.id === collegeId);
-  const dept = college?.departments || ["CSE", "ECE", "EEE", "MECH"];
-  const programs = getInternalPrograms(collegeId);
-
-  return [
-    { id: "a1", collegeId, programId: programs[0]?.id || "ip1", programTitle: programs[0]?.title || "Merit Scholarship", studentName: "Durga Prasad", rollNumber: "20341A0301", department: dept[0], year: 4, cgpa: 9.5, familyIncome: 180000, aiScore: 96, status: "Approved", appliedDate: "2024-09-15" },
-    { id: "a2", collegeId, programId: programs[1]?.id || "ip2", programTitle: programs[1]?.title || "EAPCET Scholarship", studentName: "Lakshmi Narayana", rollNumber: "21341A0201", department: dept[1] || "ECE", year: 3, cgpa: 7.8, familyIncome: 120000, aiScore: 78.5, status: "Approved", appliedDate: "2024-08-20" },
-    { id: "a3", collegeId, programId: programs[2]?.id || "ip3", programTitle: programs[2]?.title || "Need-Based Aid", studentName: "Anusha Devi", rollNumber: "21341A0502", department: dept[0], year: 3, cgpa: 8.1, familyIncome: 95000, aiScore: 81.2, status: "Pending", appliedDate: "2024-09-01" },
-    { id: "a4", collegeId, programId: programs[3]?.id || "ip4", programTitle: programs[3]?.title || "Sports Scholarship", studentName: "Ravi Teja", rollNumber: "22341A0101", department: dept[3] || "MECH", year: 2, cgpa: 7.5, familyIncome: 90000, aiScore: 75, status: "Approved", appliedDate: "2024-09-10" },
-    { id: "a5", collegeId, programId: programs[0]?.id || "ip1", programTitle: programs[0]?.title || "Merit Scholarship", studentName: "Priya Sharma", rollNumber: "20341A0405", department: dept[1] || "ECE", year: 4, cgpa: 9.2, familyIncome: 350000, aiScore: 92, status: "Approved", appliedDate: "2024-09-05" },
-    { id: "a6", collegeId, programId: programs[4]?.id || "ip5", programTitle: programs[4]?.title || "Achievement Award", studentName: "Mohammed Irfan", rollNumber: "22341A0503", department: dept[0], year: 2, cgpa: 8.8, familyIncome: 60000, aiScore: 91, status: "Pending", appliedDate: "2024-08-25" },
-    { id: "a7", collegeId, programId: programs[5]?.id || "ip6", programTitle: programs[5]?.title || "Exposure Program", studentName: "Sai Krishna", rollNumber: "21341A0301", department: dept[2] || "EEE", year: 3, cgpa: 8.4, familyIncome: 140000, aiScore: 85, status: "Pending", appliedDate: "2024-09-12" },
-    { id: "a8", collegeId, programId: programs[2]?.id || "ip3", programTitle: programs[2]?.title || "Need-Based Aid", studentName: "Adilakshmi Valmiki", rollNumber: "22341A0210", department: dept[1] || "ECE", year: 2, cgpa: 7.2, familyIncome: 80000, aiScore: 72, status: "Approved", appliedDate: "2024-08-18" },
-    { id: "a9", collegeId, programId: programs[1]?.id || "ip2", programTitle: programs[1]?.title || "EAPCET Scholarship", studentName: "Venkatesh Reddy", rollNumber: "20341A0112", department: dept[0], year: 4, cgpa: 6.8, familyIncome: 220000, aiScore: 62, status: "Rejected", appliedDate: "2024-09-08" },
-    { id: "a10", collegeId, programId: programs[0]?.id || "ip1", programTitle: programs[0]?.title || "Merit Scholarship", studentName: "Sneha Patel", rollNumber: "21341A0415", department: dept[3] || "MECH", year: 3, cgpa: 9.1, familyIncome: 110000, aiScore: 89.5, status: "Pending", appliedDate: "2024-09-20" },
-  ];
+// Applications — starts empty, students submit from mobile app
+export const getApplications = (_collegeId: string): Application[] => {
+  return [];
 };
 
 export const getAuditLogs = (collegeId: string): AuditLog[] => [
