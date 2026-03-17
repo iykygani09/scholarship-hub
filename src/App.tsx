@@ -21,9 +21,22 @@ const queryClient = new QueryClient();
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) return <Navigate to="/" replace />;
+  return <DashboardLayout>{children}</DashboardLayout>;
+}
+
+function ProtectedRoutes() {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/" replace />;
   return (
     <ScholarshipProvider>
-      <DashboardLayout>{children}</DashboardLayout>
+      <DashboardLayout>
+        <Routes>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="scholarships" element={<Scholarships />} />
+          <Route path="applications" element={<Applications />} />
+          <Route path="ai-allocation" element={<AIAllocation />} />
+        </Routes>
+      </DashboardLayout>
     </ScholarshipProvider>
   );
 }
