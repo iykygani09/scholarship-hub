@@ -53,10 +53,7 @@ const AppRoutes = () => (
     <Route path="/select-college" element={<PublicRoute><CollegeSelect /></PublicRoute>} />
     <Route path="/verify/:collegeId" element={<PublicRoute><CollegeVerify /></PublicRoute>} />
     <Route path="/login/:collegeId" element={<PublicRoute><Login /></PublicRoute>} />
-    <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-    <Route path="/scholarships" element={<ProtectedRoute><Scholarships /></ProtectedRoute>} />
-    <Route path="/applications" element={<ProtectedRoute><Applications /></ProtectedRoute>} />
-    <Route path="/ai-allocation" element={<ProtectedRoute><AIAllocation /></ProtectedRoute>} />
+    <Route path="/*" element={<ProtectedRoutes />} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
