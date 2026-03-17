@@ -37,9 +37,8 @@ const typeColor: Record<ActivityItem["type"], string> = {
 
 export default function Dashboard() {
   const { college, adminName } = useAuth();
+  const { programs, applications } = useScholarships();
   const navigate = useNavigate();
-  const programs = getInternalPrograms(college?.id || "");
-  const applications = getApplications(college?.id || "");
 
   const approved = applications.filter((a) => a.status === "Approved").length;
   const pending = applications.filter((a) => a.status === "Pending").length;

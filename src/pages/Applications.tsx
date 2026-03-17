@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getApplications, type Application } from "@/data/colleges";
+import { useScholarships } from "@/contexts/ScholarshipContext";
+import type { Application } from "@/data/colleges";
 import { Search, Eye, Check, X, FileText, Loader2, AlertTriangle, Wifi, FileImage, File } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,7 +16,7 @@ const STATUS_TABS = [
 export default function Applications() {
   const { college } = useAuth();
   const { toast } = useToast();
-  const [applications, setApplications] = useState<Application[]>(() => getApplications(college?.id || ""));
+  const { applications, setApplications } = useScholarships();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [viewApp, setViewApp] = useState<Application | null>(null);
