@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getInternalPrograms, getApplications } from "@/data/colleges";
-import { GraduationCap, FileText, Clock, CheckCircle, ArrowRight, Activity, Wifi, Users, Eye } from "lucide-react";
+import { useScholarships } from "@/contexts/ScholarshipContext";
+import { GraduationCap, FileText, Clock, CheckCircle, ArrowRight, Activity, Wifi, Users, Eye, Brain } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface ActivityItem {
