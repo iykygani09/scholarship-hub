@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getInternalPrograms, getApplications } from "@/data/colleges";
-import { GraduationCap, FileText, Clock, CheckCircle, ArrowRight, Activity, Wifi, Users, Eye } from "lucide-react";
+import { useScholarships } from "@/contexts/ScholarshipContext";
+import { GraduationCap, FileText, Clock, CheckCircle, ArrowRight, Activity, Wifi, Users, Eye, Brain } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface ActivityItem {
@@ -37,9 +37,8 @@ const typeColor: Record<ActivityItem["type"], string> = {
 
 export default function Dashboard() {
   const { college, adminName } = useAuth();
+  const { programs, applications } = useScholarships();
   const navigate = useNavigate();
-  const programs = getInternalPrograms(college?.id || "");
-  const applications = getApplications(college?.id || "");
 
   const approved = applications.filter((a) => a.status === "Approved").length;
   const pending = applications.filter((a) => a.status === "Pending").length;
@@ -106,7 +105,7 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <button onClick={() => navigate("/scholarships")} className="gradient-trust p-6 rounded-xl text-left hover:scale-[1.02] transition-transform shadow-lg group">
           <GraduationCap className="w-8 h-8 text-white mb-3" />
           <h3 className="text-white font-bold text-xl mb-1">Manage Scholarships</h3>
@@ -117,6 +116,12 @@ export default function Dashboard() {
           <FileText className="w-8 h-8 text-white mb-3" />
           <h3 className="text-white font-bold text-xl mb-1">Manage Applications</h3>
           <p className="text-white/70 text-sm mb-4">Review, approve, or reject student applications</p>
+          <ArrowRight className="w-5 h-5 text-white/70 group-hover:text-white group-hover:translate-x-1 transition-all" />
+        </button>
+        <button onClick={() => navigate("/ai-allocation")} className="gradient-tech p-6 rounded-xl text-left hover:scale-[1.02] transition-transform shadow-lg group">
+          <Brain className="w-8 h-8 text-white mb-3" />
+          <h3 className="text-white font-bold text-xl mb-1">AI Allocation</h3>
+          <p className="text-white/70 text-sm mb-4">Rank applicants using AI-powered scoring</p>
           <ArrowRight className="w-5 h-5 text-white/70 group-hover:text-white group-hover:translate-x-1 transition-all" />
         </button>
       </div>

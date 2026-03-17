@@ -2,13 +2,14 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  LayoutDashboard, GraduationCap, FileText, LogOut, ChevronLeft, Bell, Search, Menu, X,
+  LayoutDashboard, GraduationCap, FileText, LogOut, ChevronLeft, Bell, Search, Menu, X, Brain,
 } from "lucide-react";
 
 const menuItems = [
   { title: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
   { title: "Manage Scholarships", path: "/scholarships", icon: GraduationCap },
   { title: "Manage Applications", path: "/applications", icon: FileText },
+  { title: "AI Allocation", path: "/ai-allocation", icon: Brain },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

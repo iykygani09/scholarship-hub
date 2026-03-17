@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getInternalPrograms, getApplications, type InternalProgram, type Application } from "@/data/colleges";
+import { useScholarships } from "@/contexts/ScholarshipContext";
+import type { InternalProgram } from "@/data/colleges";
 import { Plus, Search, Pencil, Trash2, X, Upload, GraduationCap, Loader2, Users, Eye, Check, AlertTriangle, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Scholarships() {
   const { college } = useAuth();
   const { toast } = useToast();
-  const [programs, setPrograms] = useState<InternalProgram[]>(() => getInternalPrograms(college?.id || ""));
-  const allApplications = getApplications(college?.id || "");
+  const { programs, setPrograms, applications } = useScholarships();
+  const allApplications = applications;
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editItem, setEditItem] = useState<InternalProgram | null>(null);
