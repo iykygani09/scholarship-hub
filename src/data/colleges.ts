@@ -30,6 +30,8 @@ export interface InternalProgram {
   filledSeats: number;
   status: "Active" | "Upcoming" | "Closed";
   icon: string;
+  deadline: string; // ISO date string
+  createdAt: string; // ISO date string
 }
 
 export interface Application {
@@ -46,6 +48,18 @@ export interface Application {
   aiScore: number;
   status: "Approved" | "Pending" | "Rejected";
   appliedDate: string;
+  notified?: boolean;
+}
+
+export interface Notification {
+  id: string;
+  type: "approval" | "rejection" | "scholarship_created" | "deadline_passed" | "ai_allocation";
+  title: string;
+  description: string;
+  timestamp: string;
+  read: boolean;
+  studentName?: string;
+  programTitle?: string;
 }
 
 export interface AuditLog {

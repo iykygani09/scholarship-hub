@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useScholarships } from "@/contexts/ScholarshipContext";
 import {
-  LayoutDashboard, GraduationCap, FileText, LogOut, ChevronLeft, Bell, Search, Menu, X, Brain,
+  LayoutDashboard, GraduationCap, FileText, LogOut, ChevronLeft, Bell, Search, Menu, X, Brain, Check,
 } from "lucide-react";
 
 const menuItems = [
@@ -15,12 +16,32 @@ const menuItems = [
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const { college, adminName, signOut } = useAuth();
+  const { notifications, unreadCount, markNotificationRead, markAllRead } = useScholarships();
   const navigate = useNavigate();
 
   const handleSignOut = () => {
     signOut();
     navigate("/", { replace: true });
+  };
+
+  const notifIcon: Record<string, string> = {
+    approval: "✅",
+    rejection: "❌",
+    scholarship_created: "🎓",
+    deadline_passed: "⏰",
+    ai_allocation: "🤖",
+  };
+
+  const getRelativeTime = (date: string) => {
+    const diff = Date.now() - new Date(date).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return "Just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
   };
 
   const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => (
@@ -86,7 +107,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="h-14 sm:h-16 border-b border-border bg-card/40 backdrop-blur-lg flex items-center px-4 sm:px-6 gap-3 sm:gap-4 shrink-0">
-          {/* Mobile hamburger */}
           <button onClick={() => setMobileOpen(true)} className="md:hidden text-muted-foreground hover:text-foreground">
             <Menu className="w-5 h-5" />
           </button>
@@ -96,10 +116,62 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input placeholder="Search..." className="input-dark pl-10 py-2 w-56 text-sm" />
             </div>
-            <button className="relative text-muted-foreground hover:text-foreground transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-destructive rounded-full text-[10px] flex items-center justify-center text-destructive-foreground font-bold animate-pulse">3</span>
-            </button>
+
+            {/* Notification Bell with Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setNotifOpen(!notifOpen)}
+                className="relative text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-destructive rounded-full text-[10px] flex items-center justify-center text-destructive-foreground font-bold animate-pulse">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {notifOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
+                  <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 glass-card border border-border/50 rounded-xl shadow-2xl z-50 overflow-hidden animate-slide-up">
+                    <div className="flex items-center justify-between p-4 border-b border-border/50">
+                      <h3 className="font-bold text-foreground text-sm">Notifications</h3>
+                      {unreadCount > 0 && (
+                        <button onClick={markAllRead} className="text-xs text-primary hover:text-primary/80 flex items-center gap-1">
+                          <Check className="w-3 h-3" /> Mark all read
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-80 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="p-8 text-center">
+                          <Bell className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+                          <p className="text-sm text-muted-foreground">No notifications yet</p>
+                        </div>
+                      ) : (
+                        notifications.slice(0, 15).map((n) => (
+                          <button
+                            key={n.id}
+                            onClick={() => { markNotificationRead(n.id); }}
+                            className={`w-full text-left p-3 border-b border-border/30 hover:bg-secondary/30 transition-colors flex items-start gap-3 ${!n.read ? "bg-primary/5" : ""}`}
+                          >
+                            <span className="text-lg mt-0.5">{notifIcon[n.type] || "📢"}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-sm leading-snug ${!n.read ? "text-foreground font-medium" : "text-muted-foreground"}`}>{n.title}</p>
+                              <p className="text-xs text-muted-foreground mt-0.5 truncate">{n.description}</p>
+                              <p className="text-[10px] text-muted-foreground mt-1">{getRelativeTime(n.timestamp)}</p>
+                            </div>
+                            {!n.read && <div className="w-2 h-2 rounded-full bg-primary mt-2 shrink-0" />}
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full gradient-trust flex items-center justify-center text-white font-semibold text-sm">
                 {adminName?.charAt(0) || "A"}
