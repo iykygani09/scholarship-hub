@@ -63,19 +63,15 @@
   .glass-sidebar {
     @apply bg-sidebar/80 backdrop-blur-xl border-r border-sidebar-border;
   }
-  /* Trust & Growth: Blue → Green */
   .gradient-trust {
     background: linear-gradient(135deg, #0052CC, #40DC74);
   }
-  /* Optimism & Energy: Gold → Orange */
   .gradient-energy {
     background: linear-gradient(135deg, #FFD700, #FF8C00);
   }
-  /* Tech: Purple → Turquoise */
   .gradient-tech {
     background: linear-gradient(135deg, #6C5CE7, #00CEC9);
   }
-  /* Text gradients */
   .gradient-text-brand {
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(135deg, #0052CC, #40DC74);
@@ -139,6 +135,12 @@
   }
   .card-hover {
     @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/10 hover:border-primary/30;
+  }
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 
